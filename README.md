@@ -8,10 +8,12 @@ A full-stack, role-based attendance management platform for the fictional SkillB
 
 | Service  | URL |
 |----------|-----|
-| Frontend | `https://skillbridge.vercel.app` _(replace with your deployed URL)_ |
-| Backend  | `https://skillbridge-api.up.railway.app` _(replace with your deployed URL)_ |
-| API Base | `https://skillbridge-api.up.railway.app/api` |
-| Health   | `https://skillbridge-api.up.railway.app/health` |
+| Frontend | `https://skillbridge-five-neon.vercel.app/` 
+| Backend  | `https://skillbridge-api-zyzu.onrender.com` 
+| API Base | `https://skillbridge-api-zyzu.onrender.com/api` |
+| Health   | `https://skillbridge-api-zyzu.onrender.com/health` |
+
+
 
 ---
 
@@ -42,7 +44,7 @@ All accounts use password: `SkillBridge@2024`
 ### 1. Clone & install
 
 ```bash
-git clone <your-repo-url>
+git clone <https://github.com/SparshSPradhan/skillbridge>
 
 cd skillbridge/backend
 npm install
@@ -199,31 +201,14 @@ The invite-join flow currently has a two-step: the frontend calls `/batches/:id/
 
 ---
 
-## Deployment Guide
+## Deployment 
 
-### Backend (Railway)
+### Backend (Render)
 
-1. Push code to GitHub
-2. New project on Railway → Deploy from GitHub → select `/backend`
-3. Add environment variables (DATABASE_URL, CLERK_SECRET_KEY, REDIS_URL, etc.)
-4. Railway auto-detects Node.js and runs the `railway.json` start command
-5. `prisma migrate deploy` runs on every deploy
+------>>>> https://skillbridge-api-zyzu.onrender.com
 
 ### Frontend (Vercel)
 
-1. New project on Vercel → import GitHub repo → set root to `/frontend`
-2. Add `VITE_CLERK_PUBLISHABLE_KEY` and `VITE_API_BASE_URL` as environment variables
-3. Vercel auto-detects Vite and deploys
+------>>>>  https://skillbridge-five-neon.vercel.app/
 
-### Clerk Setup
 
-1. Create a new Clerk application
-2. Enable Email/Password sign-in
-3. Under JWT Templates → create a template named `default`
-4. Under API Keys → copy Publishable Key and Secret Key
-
-### Database (Neon)
-
-1. Create a new project on neon.tech
-2. Copy the connection string (with `?sslmode=require`)
-3. Set as `DATABASE_URL` in Railway env vars
