@@ -1,0 +1,7 @@
+Full Name: Sparsh S. Pradhan
+Email: sparshmillion11@gmail.com
+Phone: +91-9648008434
+GitHub: https://github.com/SparshSPradhan
+
+Most Challenging Part: Designing the Clerk JWT verification middleware to be both stateless and
+ cache-efficient while ensuring role checks never fall back to frontend-only gating was the hardest part to get right.
