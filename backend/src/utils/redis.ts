@@ -12,7 +12,8 @@ export const redis = new Redis(redisUrl, {
     }
     return Math.min(times * 200, 1000);
   },
-  lazyConnect: false,
+  // lazyConnect: false,
+  lazyConnect: true,
 });
 
 redis.on('connect', () => logger.info('Redis connected'));
