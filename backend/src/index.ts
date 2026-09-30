@@ -1,3 +1,6 @@
+
+
+
 import 'dotenv/config';
 import app from './app';
 import { logger } from './utils/logger';
@@ -8,16 +11,22 @@ const PORT = process.env.PORT || 3001;
 
 async function bootstrap() {
   try {
-    // Test DB connection
+    // Database is required
     await prisma.$connect();
     logger.info('✅ Database connected');
 
-    // Test Redis connection
-    await redis.ping();
-    logger.info('✅ Redis connected');
+    // Redis is optional.
+    // Do not let Redis prevent the API from starting.
+    if (redis) {
+      logger.info('ℹ️ Redis configured (optional)');
+    } else {
+      logger.info('ℹ️ REDIS_URL not configured, continuing without cache');
+    }
 
     app.listen(PORT, () => {
-      logger.info(`🚀 Server running on port ${PORT} [${process.env.NODE_ENV}]`);
+      logger.info(
+        `🚀 Server running on port ${PORT} [${process.env.NODE_ENV}]`
+      );
     });
   } catch (error) {
     logger.error('Failed to start server:', error);
@@ -27,12 +36,14 @@ async function bootstrap() {
 
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received, shutting down gracefully');
+
   await prisma.$disconnect();
-  redis.disconnect();
+
+  if (redis) {
+    redis.disconnect();
+  }
+
   process.exit(0);
 });
 
 bootstrap();
-
-
-
