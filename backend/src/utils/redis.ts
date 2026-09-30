@@ -55,29 +55,29 @@
 //   },
 // };
 
+
+
+
 import Redis from 'ioredis';
 import { logger } from './logger';
 
-const redisUrl = process.env.REDIS_URL;
+const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
-export const redis = new Redis(redisUrl || 'redis://localhost:6379', {
+export const redis = new Redis(redisUrl, {
   lazyConnect: true,
 
-  // Don't keep commands queued while Redis is unavailable
-  // enableOfflineQueue: false,
-
-  // Don't retry individual commands indefinitely
-  maxRetriesPerRequest: 1,
+  // Allow commands to survive temporary Redis reconnects.
+  maxRetriesPerRequest: 3,
 
   retryStrategy: (times) => {
-    if (times > 3) {
+    if (times > 5) {
       logger.warn(
-        'Redis connection failed after 3 retries, continuing without cache'
+        'Redis connection failed after 5 retries, continuing without cache'
       );
       return null;
     }
 
-    return Math.min(times * 500, 2000);
+    return Math.min(times * 500, 3000);
   },
 });
 
@@ -125,9 +125,13 @@ export const cache = {
         return;
       }
 
-      await redis.setex(key, ttlSeconds, JSON.stringify(value));
+      await redis.setex(
+        key,
+        ttlSeconds,
+        JSON.stringify(value)
+      );
     } catch {
-      // Redis is optional; ignore cache failures
+      // Cache failure is non-fatal.
     }
   },
 
@@ -139,7 +143,7 @@ export const cache = {
 
       await redis.del(key);
     } catch {
-      // Redis is optional; ignore cache failures
+      // Cache failure is non-fatal.
     }
   },
 
@@ -155,7 +159,7 @@ export const cache = {
         await redis.del(...keys);
       }
     } catch {
-      // Redis is optional; ignore cache failures
+      // Cache failure is non-fatal.
     }
   },
 };
