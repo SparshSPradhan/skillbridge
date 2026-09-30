@@ -64,7 +64,7 @@ export const redis = new Redis(redisUrl || 'redis://localhost:6379', {
   lazyConnect: true,
 
   // Don't keep commands queued while Redis is unavailable
-  enableOfflineQueue: false,
+  // enableOfflineQueue: false,
 
   // Don't retry individual commands indefinitely
   maxRetriesPerRequest: 1,
