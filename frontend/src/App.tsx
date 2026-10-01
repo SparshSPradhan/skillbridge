@@ -1,9 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate,  useNavigate} from 'react-router-dom';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import { useEffect } from 'react';
 import { setTokenGetter } from './lib/api';
 import { useAuthStore } from './store/auth.store';
 import { api } from './lib/api';
+import axios from 'axios';
 
 // Layout
 import AppLayout from './components/layout/AppLayout';
@@ -74,6 +75,8 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
   const { getToken, isSignedIn, isLoaded } = useAuth();
   const { user: clerkUser } = useUser();
   const { setUser, setLoading } = useAuthStore();
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     setTokenGetter(getToken);
@@ -98,6 +101,9 @@ function AppInitializer({ children }: { children: React.ReactNode }) {
         // User exists in Clerk but not in our DB → redirect to register
         setUser(null);
         setLoading(false);
+        if (axios.isAxiosError(Error) && Error.response?.status === 404) {
+          navigate('/register', { replace: true });
+        }
       });
   }, [isLoaded, isSignedIn, clerkUser, setUser, setLoading]);
 
